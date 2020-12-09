@@ -1,0 +1,26 @@
+TARGET_LIB  = libSDL2_net.a
+COMMON_OBJS = SDLnet.o \
+	SDLnetselect.o \
+	SDLnetTCP.o \
+	SDLnetUDP.o \
+	SDLnetvita.o
+
+PREFIX  = arm-dolce-eabi
+CC      = $(PREFIX)-gcc
+AR      = $(PREFIX)-ar
+CFLAGS  = -Wl,-q -Wall -O3 -Iinclude -I$(DOLCESDK)/arm-dolce-eabi/include/SDL2
+ASFLAGS = $(CFLAGS)
+
+LIBS    += -lSDL2
+
+$(TARGET_LIB): $(COMMON_OBJS)
+	$(AR) rcs $@ $^
+
+clean:
+	@rm -rf $(TARGET_LIB) $(COMMON_OBJS)
+
+install: $(TARGET_LIB)
+	@cp  $(TARGET_LIB) $(DOLCESDK)/arm-dolce-eabi/lib
+	@mkdir -p "$(DOLCESDK)/arm-dolce-eabi/include/SDL2"
+	@cp SDL_net.h "$(DOLCESDK)/arm-dolce-eabi/include/SDL2"
+	@echo "Installed!"
